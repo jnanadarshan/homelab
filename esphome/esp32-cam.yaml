@@ -1,0 +1,88 @@
+substitutions:
+  # Modify variables based on your settings
+  hostname: "ESP32Cam"
+  device_name: iot-esp32cam
+  device_friendlyname: "Ender 3 3D Print Camera"
+  device_description: "ESP32-S Camera for Ender 3 3D Print"
+
+esphome:
+  name: $hostname
+  friendly_name: $device_name
+
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+ota:
+  password: "chnage-this-to-random-32-chracter-password"
+
+wifi:
+  ssid: 'SSID Name'
+  password: 'Password'
+  fast_connect: True
+
+  ap:
+    ssid: "IOT-Endercam"
+    password: "ESPPassword"
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  reboot_timeout: 0s
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
+  - port: 9090
+    mode: snapshot
+
+web_server:
+  port: 80
+
+ota:
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+# ESP32-CAM
+esp32_camera:
+  external_clock:
+    pin: GPIO0
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO26
+    scl: GPIO27
+  data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+  power_down_pin: GPIO32
+
+  name: mycamera
+
+# Flashlight
+output:
+  - platform: ledc
+    pin: GPIO4
+    id: gpio_4
+
+## GPIO_4 is the flash light pin
+light:
+  - platform: binary
+    output: gpio_4
+    name: $hostname light
+
+number:
+  - platform: template
+    name: Câmera Led
+    optimistic: true
+    min_value: 0
+    max_value: 100
+    step: 1
+    mode: slider
+    on_value:
+      then:
+        lambda: 'id(led).set_level(x/150);'
