@@ -1,0 +1,17 @@
+---
+version: "3.1"
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=1000 #To get ID for your system login to the Terminal/SSH and then hit "id"
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /home/pi/appdata/radarr/config:/config #The full path of Config Folder
+      - /srv/dev-disk-by-uuid-77b71a5f-d37a-4466-97fc-ee22893c77ab/Plex/movies:/movies #Remote mounted Samba folder on Truenas Scale 
+      - /srv/dev-disk-by-uuid-77b71a5f-d37a-4466-97fc-ee22893c77ab/Downloads:/downloads #Remote mounted Samba folder on Truenas Scale 
+    ports:
+      - 7878:7878
+    restart: unless-stopped
