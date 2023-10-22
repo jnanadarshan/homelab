@@ -1,0 +1,17 @@
+---
+version: "3.1"
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /home/pi/appdata/sonarr/config:/config #Local config file location
+      - /srv/dev-disk-by-uuid-77b71a5f-d37a-4466-97fc-ee22893c77ab/Plex/tv:/tv #remote location where TV shows files are saved
+      - /srv/dev-disk-by-uuid-77b71a5f-d37a-4466-97fc-ee22893c77ab/Downloads:/downloads #Remote location where files are downlaoded
+    ports:
+      - 8989:8989
+    restart: unless-stopped
