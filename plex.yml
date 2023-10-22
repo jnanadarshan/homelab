@@ -1,0 +1,18 @@
+---
+version: "3.1"
+services:
+  plex:
+    image: lscr.io/linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      - PLEX_CLAIM= <<add plex toke here>> #Get your Plex token using this guide https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
+    volumes:
+      - /home/pi/appdata/plex/config:/config
+      - /srv/dev-disk-by-uuid-77b71a5f-d37a-4466-97fc-ee22893c77ab/Plex/tv:/tv  #Location where TV Show files are saved
+      - /srv/dev-disk-by-uuid-77b71a5f-d37a-4466-97fc-ee22893c77ab/Plex/movies:/movies #Location where Movie files are saved
+    restart: unless-stopped
+
