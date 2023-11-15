@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+  phpipam-web:
+    image: phpipam/phpipam-www:latest
+    ports:
+      - "8001:80" #The Web UI will be accessible on server port 8001 e.g. 192.168.1:8001. Change the 8001 Number if you want on a different Port.
+    environment:
+      - TZ=Asia/Kolkata
+      - IPAM_DATABASE_HOST=phpipam-mariadb
+      - IPAM_DATABASE_PASS=your_password #Replace your_password with your Choice of Password
+      - IPAM_DATABASE_WEBHOST=% #Do not change the % here
+    restart: unless-stopped
+    volumes:
+      - phpipam-logo:/phpipam/css/images/logo
+      - phpipam-ca:/usr/local/share/ca-certificates:ro
+    depends_on:
+      - phpipam-mariadb
+
+  phpipam-cron:
+    image: phpipam/phpipam-cron:latest
+    environment:
+      - TZ=Asia/Kolkata
+      - IPAM_DATABASE_HOST=phpipam-mariadb
+      - IPAM_DATABASE_PASS=your_password #Replace your_password with your Choice of Password. This should be the same as the above password.
+      - SCAN_INTERVAL=1h
+    restart: unless-stopped
+    volumes:
+      - phpipam-ca:/usr/local/share/ca-certificates:ro
+    depends_on:
+      - phpipam-mariadb
+
+  phpipam-mariadb:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=your_root_password #Repalce your_root_password with your Choice of Password. This can be the same as the above password. While using UI for phpIPAM Config username - root and the password from this line should be used
+    restart: unless-stopped
+    volumes:
+      - phpipam-db-data:/var/lib/mysql
+
+volumes:
+  phpipam-db-data:
+  phpipam-logo:
+  phpipam-ca:
