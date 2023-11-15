@@ -4,16 +4,17 @@ services:
   deluge:
     image: lscr.io/linuxserver/deluge
     container_name: deluge
-    environment:
+    environment: #SSH into the Linux system and run the command "id" without quotes to get your PUID and GUID
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Kolkata
       - DELUGE_LOGLEVEL=error #optional
     volumes:
-      - <<add path in your local system>>:/config #Path Example - /home/pi/appdata/deluge/config
-      - /srv/dev-disk-by-uuid-abcd1234/Downloads:/downloads #Add path to your downloads, i.e. where file should be downlaoded
+      - <<add path in your local system>>:/config #Path Example, Pi here represents your Linux username - /home/pi/appdata/deluge/config:/config
+      - /srv/dev-disk-by-uuid-abcd1234/Downloads:/downloads #Add path to your downloads, i.e. where the file should be downloaded. This path is visible in OpenMediaVault Disks->Full Path Section
     ports:
-      - 8112:8112
+      - 8112:8112 #The UI will be accessible in server IP port 8112 e.g. 192.168.1.10:8112
       - 6881:6881
       - 6881:6881/udp
     restart: unless-stopped
+    #The default password for Deluge UI is "deluge"
