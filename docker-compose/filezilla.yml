@@ -6,9 +6,9 @@ services:
     container_name: filezilla
     security_opt:
       - seccomp:unconfined #optional
-    environment:
-      - PUID=1001
-      - PGID=100
+    environment: #Your PUID and PGID might be different. SSH into your server and run the command "id" without quotes to get your PUID/PGID
+      - PUID=1000
+      - PGID=1000
       - TZ=Asia/Kolkata
     volumes:
       - /home/valyria/config/filezilla/:/config
