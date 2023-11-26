@@ -1,0 +1,28 @@
+#I intentionally run two instances because I want to separate my home pointing instance with IP pointing and the other one with remote access links
+---
+version: "3.3"
+services:
+  homer-intranet:
+    image: b4bz/homer
+    #To build from the source, comment on the previous line and uncomment below
+    #build:
+    container_name: homer-intranet
+    volumes:
+      - /home/username/appdata/homerintranet:/www/assets #replace the username text here with your Linux username e.g. pi or neelam
+    ports:
+      - 8080:8080
+    user: 1000:1000 # default
+    environment:
+      - INIT_ASSETS=1 # default
+  homer-internet:
+    image: b4bz/homer
+    #To build from the source, comment on the previous line and uncomment below
+    #build:
+    container_name: homer-internet
+    volumes:
+      - /home/username/appdata/homerinternet:/www/assets #replace the username text here with your Linux username e.g. pi or neelam
+    ports:
+      - 8090:8080
+    user: 1000:1000 # default
+    environment:
+      - INIT_ASSETS=1 # default
