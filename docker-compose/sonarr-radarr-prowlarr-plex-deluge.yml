@@ -1,0 +1,77 @@
+---
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=1000 #To get ID for your system login to the Terminal/SSH and then hit "id"
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /home/<username>/appdata/radarr:/config #The full path of Config Folder
+      - /mnt/data/movies:/movies #Remote mounted Samba folder on Truenas Scale 
+      - /home/<username>/Downloads:/downloads #Remote mounted Samba folder on Truenas Scale 
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /home/<username>/appdata/sonarr:/config #Local config file location
+      - /mnt/data/tv:/tv #remote location where TV shows files are saved
+      - /home/<username>/Downloads:/downloads #Remote location where files are downlaoded
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - /path/to/data:/config #Local path to Save Configuration
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  deluge:
+    image: lscr.io/linuxserver/deluge
+    container_name: deluge
+    environment: #SSH into the Linux system and run the command "id" without quotes to get your PUID and GUID
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - DELUGE_LOGLEVEL=error #optional
+    volumes:
+      - /home/<username>/apdata/deluge:/config #Path Example, Pi here represents your Linux username - /home/pi/appdata/deluge/config:/config
+      - /home/<username>/Downloads:/downloads #Add path to your downloads, i.e. where the file should be downloaded. This path is visible in OpenMediaVault Disks->Full Path Section
+    ports:
+      - 8112:8112 #The UI will be accessible in server IP port 8112 e.g. 192.168.1.10:8112
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+    #The default password for Deluge UI is "deluge"
+
+  plex:
+    image: lscr.io/linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      # - PLEX_CLAIM= <<add plex toke here>> #Get your Plex token using this guide https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
+    volumes:
+      - /home/<username>/appdata/plex:/config
+      - /mnt/data/tv:/tv  #Location where TV Show files are saved
+      - /mnt/data/movies:/movies #Location where Movie files are saved
+    restart: unless-stopped
